@@ -68,3 +68,15 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+# TodoApp для планирования задач
+
+Сделано на реакте.
+
+## Функционал
+
+- возможность добавления задач, для чего реализована форма и кнопка к ней (задача добавляется по нажатию на enter или кнопку `Add task`);
+- удаление задачи из списка;
+- возможность фильтрации задач по нажатию на кнопки All/Active/Completed/Clear completed соответственно их семантике;
+- логика изменения состояния задачи активный-выполненный;
+- внесение изменений в существующую задачу;

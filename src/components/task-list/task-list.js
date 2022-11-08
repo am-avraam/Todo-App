@@ -1,18 +1,27 @@
-import React from "react";
+import React, { Component } from "react";
 import Task from "../task/task";
 
 import "./task-list.css";
 
-const TaskList = ({ todos }) => {
-  const tasks = todos.map((task) => {
-    const taskInfo = task;
-    return (
-      <li key={taskInfo.id} className={taskInfo.taskType}>
-        <Task {...taskInfo} />
-      </li>
-    );
-  });
-  return <ul className="todo-list">{tasks}</ul>;
-};
+export default class TaskList extends Component {
+  render() {
+    const { todos, onDeleted, onToggleDone, onToggleEdit, updateTask } =
+      this.props;
 
-export default TaskList;
+    const tasks = todos.map((task) => {
+      const { id, ...taskInfo } = task;
+      return (
+        <Task
+          {...taskInfo}
+          id={id}
+          updateTask={updateTask}
+          onDeleted={() => onDeleted(id)}
+          onToggleDone={() => onToggleDone(id)}
+          onToggleEdit={() => onToggleEdit(id)}
+          key={id}
+        />
+      );
+    });
+    return <ul className="todo-list">{tasks}</ul>;
+  }
+}

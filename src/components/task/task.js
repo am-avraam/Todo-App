@@ -1,40 +1,72 @@
-import React from "react";
+import React, { Component } from "react";
 
 import "./task.css";
-import { formatDistanceToNow } from "date-fns";
+// import { formatDistanceToNow } from "date-fns";
+import TimeGone from "../time-gone/timegone.js";
 
-const Task = ({ taskType = false }) => {
-  let description;
-  let editInput;
-  if (!taskType) {
-    description = "Active task";
-  } else if (taskType === "editing") {
-    description = "Editing task";
-    editInput = (
-      <input type="text" className="edit" defaultValue="Editing task" />
+export default class Task extends Component {
+  render() {
+    const {
+      taskName,
+      onDeleted,
+      onToggleDone,
+      onToggleEdit,
+      completed,
+      edit,
+      id,
+      hidden,
+      dateBirth,
+      updateTask,
+    } = this.props;
+
+    let editInput;
+    let checked = false;
+    let className = "";
+    if (completed) {
+      className += " completed";
+      checked = true;
+    } else if (edit) {
+      className += " editing";
+
+      if (edit) {
+        editInput = (
+          <input
+            // id={id}
+            type="text"
+            className="edit"
+            defaultValue={taskName}
+            onKeyDown={updateTask}
+          />
+        );
+      }
+    }
+
+    if (hidden) {
+      className += " hidden";
+    }
+
+    // const birthDate = Date.now();
+
+    return (
+      <li className={className} id={id}>
+        <div className="view">
+          <input
+            className="toggle"
+            type="checkbox"
+            checked={checked}
+            onChange={() => onToggleDone(id)}
+          />
+          <label onClick={onToggleDone}>
+            <span className="description">{taskName}</span>
+            <span className="created">
+              <TimeGone dateBirth={dateBirth} />
+            </span>
+          </label>
+          <button className="icon icon-edit" onClick={onToggleEdit}></button>
+          <button className="icon icon-destroy" onClick={onDeleted}></button>
+        </div>
+        {editInput}
+      </li>
     );
-  } else if (taskType === "completed") {
-    description = "Completed task";
   }
-
-  const timeGone = formatDistanceToNow(Date.now(), {
-    includeSeconds: true,
-  });
-
-  return (
-    <>
-      <div className="view">
-        <input className="toggle" type="checkbox" />
-        <label>
-          <span className="description">{description}</span>
-          <span className="created">{timeGone}</span>
-        </label>
-        <button className="icon icon-edit"></button>
-        <button className="icon icon-destroy"></button>
-      </div>
-      {editInput}
-    </>
-  );
-};
-
-export default Task;
+}
