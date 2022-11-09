@@ -1,7 +1,13 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+
 import { formatDistanceToNow } from "date-fns";
 
 export default class TimeGone extends Component {
+  static propTypes = {
+    dateBirth: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+  };
+
   constructor(props) {
     super(props);
     const { dateBirth } = this.props;
@@ -9,6 +15,7 @@ export default class TimeGone extends Component {
     this.state = {
       timeGone: formatDistanceToNow(dateBirth, {
         includeSeconds: true,
+        addSuffix: true,
       }),
     };
   }
@@ -25,6 +32,7 @@ export default class TimeGone extends Component {
     this.setState({
       timeGone: formatDistanceToNow(this.props.dateBirth, {
         includeSeconds: true,
+        addSuffix: true,
       }),
     });
   }

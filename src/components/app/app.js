@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import NewTaskForm from "../new-task-form/new-task-form";
 import TaskList from "../task-list/task-list";
@@ -7,6 +8,36 @@ import Footer from "../footer/footer";
 import "./app.css";
 
 export default class App extends Component {
+  static propTypes = {
+    state: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.object)),
+    todoData: PropTypes.arrayOf(
+      PropTypes.shape({
+        taskName: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        id: PropTypes.number,
+        dateBirth: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+        completed: PropTypes.bool,
+        edit: PropTypes.bool,
+        hidden: PropTypes.bool,
+        input: PropTypes.oneOfType([
+          PropTypes.object,
+          PropTypes.number,
+          PropTypes.string,
+        ]),
+      })
+    ),
+    todoCount: PropTypes.number,
+    maxId: PropTypes.number,
+    createTask: PropTypes.func,
+    deleteTask: PropTypes.func,
+    addTask: PropTypes.func,
+    toggleProperty: PropTypes.func,
+    onToggleDone: PropTypes.func,
+    updateTask: PropTypes.func,
+    clearCompleted: PropTypes.func,
+    onToggleEdit: PropTypes.func,
+    taskFilter: PropTypes.func,
+  };
+
   maxId = 0;
 
   createTask(task) {

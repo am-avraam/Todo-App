@@ -1,10 +1,36 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import "./task.css";
-// import { formatDistanceToNow } from "date-fns";
 import TimeGone from "../time-gone/timegone.js";
 
 export default class Task extends Component {
+  static defaultProps = {
+    taskName: "taskName не передан",
+    completed: false,
+    edit: false,
+    id: () => {
+      Math.random();
+    },
+    hidden: false,
+    dateBirth: () => {
+      Date.now();
+    },
+  };
+
+  static propTypes = {
+    taskName: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    onDeleted: PropTypes.func,
+    onToggleDone: PropTypes.func,
+    onToggleEdit: PropTypes.func,
+    completed: PropTypes.bool,
+    edit: PropTypes.bool,
+    id: PropTypes.number,
+    hidden: PropTypes.bool,
+    dateBirth: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+    updateTask: PropTypes.func,
+  };
+
   render() {
     const {
       taskName,
@@ -44,8 +70,6 @@ export default class Task extends Component {
     if (hidden) {
       className += " hidden";
     }
-
-    // const birthDate = Date.now();
 
     return (
       <li className={className} id={id}>
