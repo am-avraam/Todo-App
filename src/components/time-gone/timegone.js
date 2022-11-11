@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { formatDistanceToNow } from 'date-fns'
-
 export default class TimeGone extends Component {
   static propTypes = {
     dateBirth: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
