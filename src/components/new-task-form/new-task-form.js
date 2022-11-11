@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import "./new-task-form.css";
+import './new-task-form.css'
 
 export default class NewTaskForm extends Component {
   static propTypes = {
@@ -9,25 +9,25 @@ export default class NewTaskForm extends Component {
     inputValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onInputChange: PropTypes.func,
     onSubmit: PropTypes.func,
-  };
+  }
 
   state = {
-    inputValue: "",
-  };
+    inputValue: '',
+  }
 
   onInputChange = (e) => {
     this.setState({
       inputValue: e.target.value,
-    });
-  };
+    })
+  }
 
   onSubmit = (e) => {
-    e.preventDefault();
-    this.props.onAdd(this.state.inputValue);
+    e.preventDefault()
+    this.props.onAdd(this.state.inputValue)
     this.setState({
-      inputValue: "",
-    });
-  };
+      inputValue: '',
+    })
+  }
 
   render() {
     return (
@@ -44,6 +44,6 @@ export default class NewTaskForm extends Component {
           <button className="task-add__button">Add task</button>
         </form>
       </header>
-    );
+    )
   }
 }

@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import "./tasks-filter.css";
+import './tasks-filter.css'
 
 export default class TasksFilter extends Component {
   static propTypes = {
     taskFilter: PropTypes.func,
     clearCompleted: PropTypes.func,
-  };
+  }
 
   render() {
-    const { taskFilter, clearCompleted } = this.props;
+    const { taskFilter, clearCompleted } = this.props
 
     return (
       <>
@@ -31,6 +31,6 @@ export default class TasksFilter extends Component {
           Clear completed
         </button>
       </>
-    );
+    )
   }
 }

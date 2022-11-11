@@ -1,22 +1,22 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import "./task.css";
-import TimeGone from "../time-gone/timegone.js";
+import './task.css'
+import TimeGone from '../time-gone/timegone.js'
 
 export default class Task extends Component {
   static defaultProps = {
-    taskName: "taskName не передан",
+    taskName: 'taskName не передан',
     completed: false,
     edit: false,
     id: () => {
-      Math.random();
+      Math.random()
     },
     hidden: false,
     dateBirth: () => {
-      Date.now();
+      Date.now()
     },
-  };
+  }
 
   static propTypes = {
     taskName: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -29,30 +29,20 @@ export default class Task extends Component {
     hidden: PropTypes.bool,
     dateBirth: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
     updateTask: PropTypes.func,
-  };
+  }
 
   render() {
-    const {
-      taskName,
-      onDeleted,
-      onToggleDone,
-      onToggleEdit,
-      completed,
-      edit,
-      id,
-      hidden,
-      dateBirth,
-      updateTask,
-    } = this.props;
+    const { taskName, onDeleted, onToggleDone, onToggleEdit, completed, edit, id, hidden, dateBirth, updateTask } =
+      this.props
 
-    let editInput;
-    let checked = false;
-    let className = "";
+    let editInput
+    let checked = false
+    let className = ''
     if (completed) {
-      className += " completed";
-      checked = true;
+      className += ' completed'
+      checked = true
     } else if (edit) {
-      className += " editing";
+      className += ' editing'
 
       if (edit) {
         editInput = (
@@ -63,23 +53,18 @@ export default class Task extends Component {
             defaultValue={taskName}
             onKeyDown={updateTask}
           />
-        );
+        )
       }
     }
 
     if (hidden) {
-      className += " hidden";
+      className += ' hidden'
     }
 
     return (
       <li className={className} id={id}>
         <div className="view">
-          <input
-            className="toggle"
-            type="checkbox"
-            checked={checked}
-            onChange={() => onToggleDone(id)}
-          />
+          <input className="toggle" type="checkbox" checked={checked} onChange={() => onToggleDone(id)} />
           <label onClick={onToggleDone}>
             <span className="description">{taskName}</span>
             <span className="created">
@@ -91,6 +76,6 @@ export default class Task extends Component {
         </div>
         {editInput}
       </li>
-    );
+    )
   }
 }
