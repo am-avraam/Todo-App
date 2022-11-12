@@ -24,11 +24,11 @@ export default class Footer extends Component {
   }
 
   render() {
-    const { count, filter, clearCompleted } = this.props
+    const { count, filter, clearCompleted, filterSelect } = this.props
     return (
       <footer className="footer">
         <span className="todo-count">{count} items left</span>
-        <TasksFilter taskFilter={filter} clearCompleted={clearCompleted} />
+        <TasksFilter taskFilter={filter} clearCompleted={clearCompleted} filterSelect={filterSelect} />
       </footer>
     )
   }

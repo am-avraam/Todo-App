@@ -33,13 +33,14 @@ export default class TaskList extends Component {
   }
 
   render() {
-    const { todos, onDeleted, onToggleDone, onToggleEdit, updateTask } = this.props
+    const { todos, onDeleted, onToggleDone, onToggleEdit, updateTask, toggleProperty } = this.props
 
     const tasks = todos.map((task) => {
       const { id, ...taskInfo } = task
       return (
         <Task
           {...taskInfo}
+          toggleProperty={toggleProperty}
           id={id}
           updateTask={updateTask}
           onDeleted={() => onDeleted(id)}

@@ -49,10 +49,11 @@ export default class App extends Component {
   }
 
   state = {
-    todoData: [
-      this.createTask('Позвонить Солу'),
-      this.createTask('Залечь на дно в Брюгге'),
-      this.createTask('Достучаться до небес'),
+    todoData: [this.createTask('Позвонить Солу'), this.createTask('Залечь на дно'), this.createTask('в Брюгге')],
+    filterSelect: [
+      { selected: true, id: 'All' },
+      { selected: false, id: 'Active' },
+      { selected: false, id: 'Completed' },
     ],
   }
 
@@ -69,7 +70,10 @@ export default class App extends Component {
 
   addTask = (input) => {
     if (input.length > 0) {
-      const newItem = this.createTask(input)
+      let newItem = this.createTask(input)
+      if (this.state.filterSelect.find((filter) => filter.selected).id === 'Completed') {
+        newItem = { ...newItem, hidden: true }
+      }
 
       this.setState(({ todoData }) => {
         const newArray = [...todoData, newItem]
@@ -80,16 +84,19 @@ export default class App extends Component {
     }
   }
 
-  toggleProperty = (arr, id, property) => {
+  toggleProperty = (arr, id, property, property2 = null) => {
     const idx = arr.findIndex((el) => el.id === id)
     const oldTask = arr[idx]
-    const newTask = { ...oldTask, [property]: !oldTask[property] }
+    const newTask = { ...oldTask, [property]: !oldTask[property], [property2]: !oldTask[property2] }
 
     return [...arr.slice(0, idx), newTask, ...arr.slice(idx + 1)]
   }
 
   onToggleDone = (id) => {
     this.setState(({ todoData }) => {
+      if (this.state.filterSelect.find((filter) => filter.selected).id !== 'All') {
+        return { todoData: this.toggleProperty(todoData, id, 'completed', 'hidden') }
+      }
       return { todoData: this.toggleProperty(todoData, id, 'completed') }
     })
   }
@@ -124,8 +131,31 @@ export default class App extends Component {
     })
   }
 
+  onToggleSelectReset = () => {
+    this.setState(({ filterSelect }) => {
+      let filtCopy = [...filterSelect]
+
+      return {
+        filterSelect: filtCopy.map((el) => {
+          el.selected = false
+          return el
+        }),
+      }
+    })
+  }
+
+  onToggleSelecet = (id) => {
+    this.setState(({ filterSelect }) => {
+      if (filterSelect.find((el) => el.id === id).selected === false) {
+        return { filterSelect: this.toggleProperty(filterSelect, id, 'selected') }
+      }
+    })
+  }
+
   taskFilter = (e) => {
     if (e.target.innerHTML === 'All') {
+      this.onToggleSelectReset()
+      this.onToggleSelecet(e.target.id)
       this.setState(({ todoData }) => {
         let newArr = [...todoData]
         newArr.map((el) => {
@@ -135,6 +165,8 @@ export default class App extends Component {
         return { todoData: newArr }
       })
     } else if (e.target.innerHTML === 'Active') {
+      this.onToggleSelectReset()
+      this.onToggleSelecet(e.target.id)
       this.setState(({ todoData }) => {
         let newArr = [...todoData]
         newArr.map((el) => {
@@ -149,6 +181,8 @@ export default class App extends Component {
         return { todoData: newArr }
       })
     } else if (e.target.innerHTML === 'Completed') {
+      this.onToggleSelectReset()
+      this.onToggleSelecet(e.target.id)
       this.setState(({ todoData }) => {
         let newArr = [...todoData]
         newArr.map((el) => {
@@ -167,6 +201,7 @@ export default class App extends Component {
 
   render() {
     const { todoData } = this.state
+    const { filterSelect } = this.state
     const todoCount = todoData.filter((el) => !el.completed).length
 
     return (
@@ -183,6 +218,7 @@ export default class App extends Component {
           />
           <Footer
             todoData={todoData}
+            filterSelect={filterSelect}
             count={todoCount}
             filter={this.taskFilter}
             deleteTask={this.deleteTask}

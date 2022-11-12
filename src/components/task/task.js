@@ -68,7 +68,7 @@ export default class Task extends Component {
           <label onClick={onToggleDone}>
             <span className="description">{taskName}</span>
             <span className="created">
-              <TimeGone dateBirth={dateBirth} />
+              created <TimeGone dateBirth={dateBirth} />
             </span>
           </label>
           <button className="icon icon-edit" onClick={onToggleEdit}></button>

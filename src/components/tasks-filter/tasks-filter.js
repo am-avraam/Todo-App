@@ -11,22 +11,25 @@ export default class TasksFilter extends Component {
 
   render() {
     const { taskFilter, clearCompleted } = this.props
+    let { filterSelect } = this.props
 
+    const filters = filterSelect.map((filter) => {
+      const { id, selected } = filter
+      let className = ''
+      if (selected) {
+        className = 'selected'
+      }
+      return (
+        <li key={id}>
+          <button onClick={(e) => taskFilter(e)} id={id} className={className}>
+            {id}
+          </button>
+        </li>
+      )
+    })
     return (
       <>
-        <ul className="filters">
-          <li>
-            <button onClick={(e) => taskFilter(e)} className="selected">
-              All
-            </button>
-          </li>
-          <li>
-            <button onClick={(e) => taskFilter(e)}>Active</button>
-          </li>
-          <li>
-            <button onClick={(e) => taskFilter(e)}>Completed</button>
-          </li>
-        </ul>
+        <ul className="filters">{filters}</ul>
         <button onClick={() => clearCompleted()} className="clear-completed">
           Clear completed
         </button>
