@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import PropTypes from 'prop-types'
 import { formatDistanceToNowStrict } from 'date-fns'
 export default class TimeGone extends Component {
@@ -12,7 +12,6 @@ export default class TimeGone extends Component {
 
     this.state = {
       timeGone: formatDistanceToNowStrict(dateBirth, {
-        // includeSeconds: true,
         addSuffix: true,
       }),
     }
@@ -29,7 +28,6 @@ export default class TimeGone extends Component {
   tick() {
     this.setState({
       timeGone: formatDistanceToNowStrict(this.props.dateBirth, {
-        // includeSeconds: true,
         addSuffix: true,
       }),
     })

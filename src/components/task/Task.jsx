@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import './task.css'
-import TimeGone from '../time-gone/timegone.js'
+import './Task.css'
+import TimeGone from '../TimeGone/TimeGone'
 
 export default class Task extends Component {
   static defaultProps = {
@@ -45,15 +45,7 @@ export default class Task extends Component {
       className += ' editing'
 
       if (edit) {
-        editInput = (
-          <input
-            // id={id}
-            type="text"
-            className="edit"
-            defaultValue={taskName}
-            onKeyDown={updateTask}
-          />
-        )
+        editInput = <input type="text" className="edit" defaultValue={taskName} onKeyDown={updateTask} />
       }
     }
 

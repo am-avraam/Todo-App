@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import Task from '../task/task'
+import Task from '../Task/Task'
 
-import './task-list.css'
+import './TaskList.css'
 
 export default class TaskList extends Component {
   static defaultProps = {
