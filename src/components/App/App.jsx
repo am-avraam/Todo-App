@@ -6,6 +6,7 @@ import TaskList from '../TaskList/TaskList'
 import Footer from '../Footer/Footer'
 
 import './App.css'
+// import '../../index.css'
 
 export default class App extends Component {
   static propTypes = {
@@ -36,7 +37,7 @@ export default class App extends Component {
 
   maxId = 0
 
-  createTask(task) {
+  createTask(task, timer = [0, '00']) {
     //  создает Task, устанавливая дефолтные значения пропсов и введеный инпут
     return {
       taskName: task,
@@ -46,11 +47,12 @@ export default class App extends Component {
       edit: false,
       hidden: false,
       input: null,
+      timer: timer,
     }
   }
 
   state = {
-    todoData: [this.createTask('Позвонить Солу'), this.createTask('Залечь на дно'), this.createTask('в Брюгге')],
+    todoData: [this.createTask('Позвонить'), this.createTask('Залечь'), this.createTask('Брюгге')],
     filterSelect: [
       { selected: true, id: 'All' },
       { selected: false, id: 'Active' },
@@ -68,10 +70,11 @@ export default class App extends Component {
     })
   }
 
-  addTask = (input) => {
+  addTask = (inputValue, inputMinute, inputSeconds) => {
     // добавляет Task в список, меняя state
-    if (input.length > 0 && input.trim().length > 0) {
-      let newItem = this.createTask(input)
+    let timer = inputMinute || inputSeconds ? [inputMinute, inputSeconds] : [0, 0]
+    if (inputValue.length > 0 && inputValue.trim().length > 0) {
+      let newItem = this.createTask(inputValue, timer)
       if (this.state.filterSelect.find((filter) => filter.selected).id === 'Completed') {
         newItem = { ...newItem, hidden: true }
       }

@@ -30,11 +30,17 @@
 	text-rendering: optimizeLegibility;
 }
 
+.new-todo-form {
+	display: flex;
+	margin-bottom: 0;
+}
+
 .new-todo,
+.new-todo-form .new-todo-form__timer,
 .edit {
 	position: relative;
 	margin: 0;
-	min-width: 80%;			
+	width: 100%;
 	font-size: 24px;
 	font-family: inherit;
 	font-weight: inherit;
@@ -48,30 +54,22 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.new-todo {
+.new-todo, .new-todo-form .new-todo-form__timer {
 	padding: 16px 16px 16px 60px;
 	border: none;
 	background: rgba(0, 0, 0, 0.003);
 	box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
 }
 
-.task-add {
-    display: flex;
-	margin: 0;
+.new-todo {
+	width: 70%;
+}
+
+.new-todo-form .new-todo-form__timer {
+	width: 15%;
+	padding-left: 16px;
 }
 
 .task-add__button {
-    cursor: pointer; 
-    font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 20px;
-	font-family: inherit;
-	font-weight: inherit;
-    line-height: 1.4em;
-	color: inherit;
-	padding: 3px;
-	border: 1px solid #999;
-	box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
-	box-sizing: border-box;
-    width: 100%;
-	margin-left: 5px;
-}  
+  display: none;
+}
