@@ -1,47 +1,20 @@
-import { Component } from 'react'
-import PropTypes from 'prop-types'
+import { useState } from 'react'
 
 import NewTaskForm from '../NewTaskForm/NewTaskForm'
 import TaskList from '../TaskList/TaskList'
 import Footer from '../Footer/Footer'
 
 import './App.css'
-// import '../../index.css'
 
-export default class App extends Component {
-  static propTypes = {
-    state: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.object)),
-    todoData: PropTypes.arrayOf(
-      PropTypes.shape({
-        taskName: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        id: PropTypes.number,
-        dateBirth: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-        completed: PropTypes.bool,
-        edit: PropTypes.bool,
-        hidden: PropTypes.bool,
-        input: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.string]),
-      })
-    ),
-    todoCount: PropTypes.number,
-    maxId: PropTypes.number,
-    createTask: PropTypes.func,
-    deleteTask: PropTypes.func,
-    addTask: PropTypes.func,
-    toggleProperty: PropTypes.func,
-    onToggleDone: PropTypes.func,
-    updateTask: PropTypes.func,
-    clearCompleted: PropTypes.func,
-    onToggleEdit: PropTypes.func,
-    taskFilter: PropTypes.func,
-  }
+function App() {
+  let [newID, setID] = useState(0)
 
-  maxId = 0
-
-  createTask(task, timer = [0, '00']) {
+  const createTask = (task, timer = [0, '00']) => {
+    setID((newID) => (newID = newID + 1))
     //  создает Task, устанавливая дефолтные значения пропсов и введеный инпут
     return {
       taskName: task,
-      id: this.maxId++,
+      id: newID + 1,
       dateBirth: new Date(),
       completed: false,
       edit: false,
@@ -51,44 +24,36 @@ export default class App extends Component {
     }
   }
 
-  state = {
-    todoData: [this.createTask('Позвонить'), this.createTask('Залечь'), this.createTask('Брюгге')],
-    filterSelect: [
-      { selected: true, id: 'All' },
-      { selected: false, id: 'Active' },
-      { selected: false, id: 'Completed' },
-    ],
-  }
+  // const [todoData, setTodoData] = useState([createTask('Позвонить'), createTask('Залечь'), createTask('Брюгге')])
 
-  deleteTask = (id) => {
+  const [todoData, setTodoData] = useState([])
+
+  const [filterSelect, setFilter] = useState([
+    { selected: true, id: 'All' },
+    { selected: false, id: 'Active' },
+    { selected: false, id: 'Completed' },
+  ])
+
+  const deleteTask = (id) => {
     // удаляет Task из списка, меняя state
-    this.setState(({ todoData }) => {
-      let resArr = [...todoData].filter((el) => el.id != id)
-      return {
-        todoData: resArr,
-      }
-    })
+    setTodoData([...todoData].filter((el) => el.id != id))
   }
 
-  addTask = (inputValue, inputMinute, inputSeconds) => {
+  const addTask = (inputValue, inputMinute, inputSeconds) => {
     // добавляет Task в список, меняя state
     let timer = inputMinute || inputSeconds ? [inputMinute, inputSeconds] : [0, 0]
     if (inputValue.length > 0 && inputValue.trim().length > 0) {
-      let newItem = this.createTask(inputValue, timer)
-      if (this.state.filterSelect.find((filter) => filter.selected).id === 'Completed') {
+      let newItem = createTask(inputValue, timer)
+
+      if (filterSelect.find((filter) => filter.selected).id === 'Completed') {
         newItem = { ...newItem, hidden: true }
       }
 
-      this.setState(({ todoData }) => {
-        const newArray = [...todoData, newItem]
-        return {
-          todoData: newArray,
-        }
-      })
+      setTodoData((todoData) => [...todoData, newItem])
     }
   }
 
-  toggleProperty = (arr, id, property, property2 = null) => {
+  const toggleProperty = (arr, id, property, property2 = null) => {
     // устанавливает противоположное булево значение определенного пропса (опционально двух пропсов)
     let newArr = arr.map((element) => {
       if (element.id === id) {
@@ -99,94 +64,86 @@ export default class App extends Component {
     return newArr
   }
 
-  onToggleDone = (id) => {
+  const onToggleDone = (id) => {
     // переводит задачу в статус Completed и прячет ее в зависимости от фильтра
-    this.setState(({ todoData }) => {
-      if (this.state.filterSelect.find((filter) => filter.selected).id !== 'All') {
-        return { todoData: this.toggleProperty(todoData, id, 'completed', 'hidden') }
+    setTodoData((todoData) => {
+      if (filterSelect.find((filter) => filter.selected).id !== 'All') {
+        return toggleProperty(todoData, id, 'completed', 'hidden')
       }
-      return { todoData: this.toggleProperty(todoData, id, 'completed') }
+      return toggleProperty(todoData, id, 'completed')
     })
   }
 
-  updateTask = (e) => {
-    // обновляет название задачи по введенному инпуту
+  const updateTask = (e) => {
     if (e.keyCode === 13) {
       if (e.target.value.length > 0) {
         const id = e.currentTarget.parentNode.getAttribute('id')
-        const newEl = this.createTask(e.target.value)
+        const newEl = createTask(e.target.value)
 
-        this.setState(({ todoData }) => {
+        setTodoData((todoData) => {
           let newArr = todoData.map((el) => {
             if (el.id === +id) {
               el = newEl
             }
             return el
           })
-          return { todoData: newArr }
+          return newArr
         })
       }
     }
   }
 
-  clearCompleted = () => {
+  const clearCompleted = () => {
     // удаляет все задачи с true completed
-    this.setState(({ todoData }) => {
+    setTodoData((todoData) => {
       let newArr = [...todoData]
       let resArr = newArr.filter((el) => el.completed === false)
-      return { todoData: resArr }
+      return resArr
     })
   }
 
-  onToggleEdit = (id) => {
+  const onToggleEdit = (id) => {
     // передает пропсу edit значение true
-    this.setState(({ todoData }) => {
-      return { todoData: this.toggleProperty(todoData, id, 'edit') }
+    setTodoData((todoData) => {
+      return toggleProperty(todoData, id, 'edit')
     })
   }
 
-  onToggleSelectReset = () => {
+  const onToggleSelectReset = () => {
     // сбрасывает выбранный фильтр
-    this.setState(({ filterSelect }) => {
-      let filtCopy = [...filterSelect]
-
-      return {
-        filterSelect: filtCopy.map((el) => {
-          el.selected = false
-          return el
-        }),
-      }
+    setFilter((filterSelect) => {
+      return [...filterSelect].map((el) => {
+        el.selected = false
+        return el
+      })
     })
   }
 
-  onToggleSelecet = (id) => {
-    // переводит филтр в активный selected
-    this.setState(({ filterSelect }) => {
+  const onToggleSelecet = (id) => {
+    // переводит фильтр в активный selected
+    setFilter((filterSelect) => {
       if (filterSelect.find((el) => el.id === id).selected === false) {
-        return { filterSelect: this.toggleProperty(filterSelect, id, 'selected') }
+        return toggleProperty(filterSelect, id, 'selected')
       }
     })
   }
 
-  taskFilter = (e) => {
+  const taskFilter = (e) => {
     // фильтрует задачи в зависимости от нажатой кнопки
     if (e.target.innerHTML === 'All') {
-      this.onToggleSelectReset()
-      this.onToggleSelecet(e.target.id)
-      this.setState(({ todoData }) => {
-        let newArr = [...todoData]
-        newArr.map((el) => {
+      onToggleSelectReset()
+      onToggleSelecet(e.target.id)
+      setTodoData((todoData) => {
+        return [...todoData].map((el) => {
           el.hidden = false
           return el
         })
-        return { todoData: newArr }
       })
     } else if (e.target.innerHTML === 'Active') {
-      this.onToggleSelectReset()
-      this.onToggleSelecet(e.target.id)
-      this.setState(({ todoData }) => {
-        let newArr = [...todoData]
-        newArr.map((el) => {
+      onToggleSelectReset()
+      onToggleSelecet(e.target.id)
+      setTodoData((todoData) => {
+        return [...todoData].map((el) => {
           el.hidden = false
           if (el.completed === true) {
             el.hidden = true
@@ -194,15 +151,12 @@ export default class App extends Component {
           }
           return el
         })
-
-        return { todoData: newArr }
       })
     } else if (e.target.innerHTML === 'Completed') {
-      this.onToggleSelectReset()
-      this.onToggleSelecet(e.target.id)
-      this.setState(({ todoData }) => {
-        let newArr = [...todoData]
-        newArr.map((el) => {
+      onToggleSelectReset()
+      onToggleSelecet(e.target.id)
+      setTodoData((todoData) => {
+        return [...todoData].map((el) => {
           el.hidden = false
           if (el.completed === false) {
             el.hidden = true
@@ -210,39 +164,35 @@ export default class App extends Component {
           }
           return el
         })
-
-        return { todoData: newArr }
       })
     }
   }
 
-  render() {
-    const { todoData } = this.state
-    const { filterSelect } = this.state
-    const todoCount = todoData.filter((el) => !el.completed).length
+  const todoCount = todoData ? todoData.filter((el) => !el.completed).length : null
 
-    return (
-      <section className="todoapp">
-        <NewTaskForm onAdd={this.addTask} />
-        <section className="main">
-          <TaskList
-            todos={todoData}
-            onDeleted={this.deleteTask}
-            onToggleDone={this.onToggleDone}
-            onToggleEdit={this.onToggleEdit}
-            filter={this.taskFilter}
-            updateTask={this.updateTask}
-          />
-          <Footer
-            todoData={todoData}
-            filterSelect={filterSelect}
-            count={todoCount}
-            filter={this.taskFilter}
-            deleteTask={this.deleteTask}
-            clearCompleted={this.clearCompleted}
-          />
-        </section>
+  return (
+    <section className="todoapp">
+      <NewTaskForm onAdd={addTask} />
+      <section className="main">
+        <TaskList
+          todos={todoData}
+          onDeleted={deleteTask}
+          onToggleDone={onToggleDone}
+          onToggleEdit={onToggleEdit}
+          filter={taskFilter}
+          updateTask={updateTask}
+        />
+        <Footer
+          todoData={todoData}
+          filterSelect={filterSelect}
+          count={todoCount}
+          filter={taskFilter}
+          deleteTask={deleteTask}
+          clearCompleted={clearCompleted}
+        />
       </section>
-    )
-  }
+    </section>
+  )
 }
+
+export default App

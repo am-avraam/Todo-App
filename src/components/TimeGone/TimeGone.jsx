@@ -1,39 +1,27 @@
-import { Component } from 'react'
-import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 import { formatDistanceToNowStrict } from 'date-fns'
-export default class TimeGone extends Component {
-  static propTypes = {
-    dateBirth: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-  }
 
-  constructor(props) {
-    super(props)
-    const { dateBirth } = this.props
-
-    this.state = {
-      timeGone: formatDistanceToNowStrict(dateBirth, {
-        addSuffix: true,
-      }),
-    }
-  }
-
-  componentDidMount() {
-    this.timerID = setInterval(() => this.tick(), 1000)
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerID)
-  }
-
-  tick() {
-    this.setState({
-      timeGone: formatDistanceToNowStrict(this.props.dateBirth, {
-        addSuffix: true,
-      }),
+const TimeGone = ({ dateBirth }) => {
+  const [timeGone, setGone] = useState(
+    formatDistanceToNowStrict(dateBirth, {
+      addSuffix: true,
     })
+  )
+
+  const tick = () => {
+    setGone(
+      formatDistanceToNowStrict(dateBirth, {
+        addSuffix: true,
+      })
+    )
   }
 
-  render() {
-    return <>{this.state.timeGone}</>
-  }
+  useEffect(() => {
+    let timerID = setInterval(() => tick(), 1000)
+    return () => clearInterval(timerID)
+  })
+
+  return <>{timeGone}</>
 }
+
+export default TimeGone

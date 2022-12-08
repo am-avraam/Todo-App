@@ -1,23 +1,18 @@
-import { Component } from 'react'
-import PropTypes from 'prop-types'
-
+import { useState } from 'react'
 import './NewTaskForm.css'
 
-export default class NewTaskForm extends Component {
-  static propTypes = {
-    state: PropTypes.object,
-    inputValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onInputChange: PropTypes.func,
-    onSubmit: PropTypes.func,
+const NewTaskForm = ({ onAdd }) => {
+  const [inputValue, setInputValue] = useState('')
+  const [inputMinute, setInputMinute] = useState('')
+  const [inputSeconds, setInputSeconds] = useState('')
+
+  const useInputReset = () => {
+    setInputValue('')
+    setInputMinute('')
+    setInputSeconds('')
   }
 
-  state = {
-    inputValue: '',
-    inputMinute: '',
-    inputSeconds: '',
-  }
-
-  onInputChange = (e) => {
+  const onInputChange = (e) => {
     // слушает введенный инпут, вносит в state компонента
     const textInput = document.querySelector('.new-todo')
     const minInput = document.querySelectorAll('.new-todo-form__timer')[0]
@@ -29,63 +24,52 @@ export default class NewTaskForm extends Component {
 
     let branch
     e.target == textInput
-      ? (branch = 'inputValue')
+      ? setInputValue(res)
       : e.target == minInput && numberValidation && valueValidation
-      ? (branch = 'inputMinute')
+      ? setInputMinute(res)
       : e.target == secInput && numberValidation && valueValidation
-      ? (branch = 'inputSeconds')
+      ? setInputSeconds(res)
       : null
     if (!branch) return
-    this.setState(() => {
-      return { [branch]: res }
-    })
   }
 
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     // слушает сабмит - вносит state компонента в функцию добавления задачи и обнуляет инпут
-    const { inputValue, inputMinute, inputSeconds } = this.state
     e.preventDefault()
-    this.props.onAdd(inputValue, inputMinute, inputSeconds)
-    this.setState({
-      inputValue: '',
-      inputMinute: '',
-      inputSeconds: '',
-    })
+    onAdd(inputValue, inputMinute, inputSeconds)
+    useInputReset()
   }
 
-  // componentDidUpdate(d, prevState) {
+  return (
+    <header className="header">
+      <h1>todos</h1>
 
-  // }
-
-  render() {
-    return (
-      <header className="header">
-        <h1>todos</h1>
-        <form className="new-todo-form" onSubmit={this.onSubmit}>
-          <input
-            className="new-todo"
-            placeholder="What needs to be done?"
-            autoFocus
-            onChange={this.onInputChange}
-            value={this.state.inputValue}
-          />
-          <input
-            className="new-todo-form__timer"
-            value={this.state.inputMinute}
-            onChange={this.onInputChange}
-            placeholder="Min"
-            autoFocus
-          ></input>
-          <input
-            className="new-todo-form__timer"
-            value={this.state.inputSeconds}
-            onChange={this.onInputChange}
-            placeholder="Sec"
-            autoFocus
-          ></input>
-          <button className="task-add__button">Add task</button>
-        </form>
-      </header>
-    )
-  }
+      <form className="new-todo-form" onSubmit={onSubmit}>
+        <input
+          className="new-todo"
+          placeholder="What needs to be done?"
+          autoFocus
+          onChange={onInputChange}
+          value={inputValue}
+        />
+        <input
+          className="new-todo-form__timer"
+          value={inputMinute}
+          onChange={onInputChange}
+          placeholder="Min"
+          autoFocus
+        ></input>
+        <input
+          className="new-todo-form__timer"
+          value={inputSeconds}
+          onChange={onInputChange}
+          placeholder="Sec"
+          autoFocus
+        ></input>
+        <button className="task-add__button">Add task</button>
+      </form>
+    </header>
+  )
 }
+
+export default NewTaskForm

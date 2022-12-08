@@ -1,10 +1,8 @@
-import { Component } from 'react'
+import { useEffect, useState } from 'react'
 
-// import './Timer.css'
-
-export default class Timer extends Component {
+const Timer = ({ timer: time }) => {
   // форматирует значение таймера при его первом появлении
-  toAppear = (indicator) => {
+  const toAppear = (indicator) => {
     if (!indicator) {
       return '00'
     } else if (indicator && indicator.length < 2) {
@@ -12,20 +10,17 @@ export default class Timer extends Component {
     } else return indicator
   }
 
+  const [timer, setTimer] = useState(`${toAppear(time[0])}:${toAppear(time[1])}`)
+  const [timerId, setTimerId] = useState('')
+  const [timerFromZero, setZero] = useState(false)
+
   // очищает id интервала и обнуляет предназначенный для него state
-  resetTimerId = () => {
-    clearInterval(this.state.timerId)
-    this.setState({ timerId: '' })
+  const resetTimerId = () => {
+    clearInterval(timerId)
+    setTimerId('')
   }
 
-  state = {
-    timer: `${this.toAppear(this.props.timer[0])}:${this.toAppear(this.props.timer[1])}`,
-    timerId: '',
-    fromZero: false,
-  }
-
-  // парсит и возвращает значение пройденного таймера
-  parseTime = (duration) => {
+  const parseTime = (duration) => {
     let timing = 0
     duration = duration.split(':')
     parseInt(duration[0]) ? (timing += +duration[0] * 60) : (timing += 0)
@@ -34,12 +29,10 @@ export default class Timer extends Component {
   }
 
   // таймер от нуля
-  fromZero = () => {
+  const fromZero = () => {
     let timerId
 
-    let start = this.parseTime(this.state.timer)
-      ? new Date(0, 0, 0, 0, 0, 0, this.parseTime(this.state.timer) * 1000)
-      : new Date(0, 0, 0, 0, 0, 0, 0)
+    let start = parseTime(timer) ? new Date(0, 0, 0, 0, 0, 0, parseTime(timer) * 1000) : new Date(0, 0, 0, 0, 0, 0, 0)
 
     const update = () => {
       start.setSeconds(start.getSeconds() + 1)
@@ -50,38 +43,35 @@ export default class Timer extends Component {
       let seconds = start.getSeconds()
       if (seconds < 10) seconds = '0' + seconds
 
-      this.setState(() => {
-        return { timer: `${minutes}:${seconds}` }
-      })
+      setTimer(`${minutes}:${seconds}`)
     }
 
     timerId = setInterval(update, 1000)
-    this.setState({
-      timerId: timerId,
-      fromZero: true,
-    })
+
+    setTimerId(timerId)
+    setZero(true)
   }
 
   // при нажатии "play" запускает определенный вид таймера (в зависимости от (не)заданного времени).
   // при нажатии "pause" очищает интервал, останавливает таймер, сохраняя оставшийся тайминг.
-  toggleTimer = (e) => {
+  const toggleTimer = (e) => {
     if (e.target.className == 'icon icon-pause') {
-      this.resetTimerId()
+      resetTimerId()
       return
-    } else if (this.state.timerId) return
+    } else if (timerId) return
 
     // для таймера обратного отсчета
 
     // значение таймера из state делится на два элемента массива для дальнейшей обработки значения
-    let duration = this.state.timer.split(':')
+    let duration = timer.split(':')
 
     let timing = 0
     // парсим числовое значение каждого элемента массива
     parseInt(duration[0]) ? (timing += +duration[0] * 60) : (timing += 0)
     parseInt(duration[1]) ? (timing += +duration[1]) : (timing += 0)
 
-    if (!timing || this.state.fromZero) {
-      this.fromZero()
+    if (!timing || timerFromZero) {
+      fromZero()
       return
     }
     let start = Date.now(),
@@ -90,7 +80,7 @@ export default class Timer extends Component {
       seconds,
       interval
 
-    const timer = () => {
+    const timerGo = () => {
       let end = false
       // получаем кол-во секунд, прошедших с момента вызова stateTimer()
       diff = timing - (((Date.now() - start) / 1000) | 0)
@@ -107,9 +97,7 @@ export default class Timer extends Component {
       // флаг end служит индикатором для очистки интервала
       if (end && interval) clearInterval(interval)
 
-      this.setState(() => {
-        return { timer: `${minutes}:${seconds}` }
-      })
+      setTimer(`${minutes}:${seconds}`)
 
       if (diff <= 0) {
         // добавляем секунду, чтобы обратный отсчет начался с полной продолжительности,
@@ -118,25 +106,21 @@ export default class Timer extends Component {
       }
     }
     // чтобы не ждать секунду до запуска таймера
-    timer()
-    interval = setInterval(timer, 1000)
+    timerGo()
+    interval = setInterval(timerGo, 1000)
 
-    this.setState({
-      timerId: interval,
-    })
+    setTimerId(interval)
   }
 
-  componentWillUnmount() {
-    clearInterval(this.state.timerId)
-  }
+  useEffect(() => () => resetTimerId(), [])
 
-  render() {
-    return (
-      <span className="description">
-        <button onClick={(e) => this.toggleTimer(e)} className="icon icon-play"></button>
-        <button onClick={(e) => this.toggleTimer(e)} className="icon icon-pause"></button>
-        {this.state.timer}
-      </span>
-    )
-  }
+  return (
+    <span className="description">
+      <button onClick={(e) => toggleTimer(e)} className="icon icon-play"></button>
+      <button onClick={(e) => toggleTimer(e)} className="icon icon-pause"></button>
+      {timer}
+    </span>
+  )
 }
+
+export default Timer
